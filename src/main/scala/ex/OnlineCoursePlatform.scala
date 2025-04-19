@@ -1,7 +1,10 @@
 package ex
 
 import util.Optionals.Optional
-import util.Sequences.* // Assuming Sequence and related methods are here
+import util.Sequences.*
+
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer // Assuming Sequence and related methods are here
 
 // Represents a course offered on the platform
 trait Course:
@@ -12,7 +15,9 @@ trait Course:
 
 object Course:
   // Factory method for creating Course instances
-  def apply(courseId: String, title: String, instructor: String, category: String): Course = ???
+  def apply(courseId: String, title: String, instructor: String, category: String): Course = CourseImpl(courseId, title, instructor, category)
+
+  case class CourseImpl(courseId: String, title: String, instructor: String, category: String) extends Course
 /**
  * Manages courses and student enrollments on an online learning platform.
  */
@@ -85,8 +90,71 @@ trait OnlineCoursePlatform:
 end OnlineCoursePlatform
 
 object OnlineCoursePlatform:
-  // Factory method for creating an empty platform instance
-  def apply(): OnlineCoursePlatform = ??? // Fill Here!
+
+  def apply(courses: mutable.Set[Course], students: List[String], students_courses: ListBuffer[(String, String)]): OnlineCoursePlatform = OnlineCoursePlatformImpl(courses, students, students_courses)
+
+  case class OnlineCoursePlatformImpl(courses: mutable.Set[Course], students: List[String], studentsCourses: ListBuffer[(String, String)]) extends OnlineCoursePlatform:
+
+    def addCourse(course: Course): Unit = courses.add(course)
+
+    def findCoursesByCategory(category: String): Sequence[Course] =
+      val filteredCourses = courses.filter(course => course.category == category)
+
+      var sequence: Sequence[Course] = Sequence.Nil()
+      for course <- filteredCourses do
+        sequence = Sequence.Cons(course, sequence)
+
+      sequence
+
+    def getCourse(courseId: String): Optional[Course] =
+      val filteredCourses = courses.filter(course => course.courseId == courseId)
+
+      var optional: Optional[Course] = Optional.Empty()
+      for course <- filteredCourses do
+        optional= Optional.Just(course)
+
+      optional
+
+    def removeCourse(course: Course): Unit = courses.remove(course)
+
+    def isCourseAvailable(courseId: String): Boolean =
+      val filteredCourses = courses.filter(course => course.courseId == courseId)
+
+      if filteredCourses.nonEmpty
+      then
+        true
+      else
+        false
+
+    def enrollStudent(studentId: String, courseId: String): Unit = studentsCourses.addOne(studentId, courseId)
+
+    def unenrollStudent(studentId: String, courseId: String): Unit =
+      val students_courses2 = studentsCourses.toList
+      for i <- 0 to (students_courses2.size - 1)
+        if students_courses2(i)._1.equals(studentId) && students_courses2(i)._2.equals(courseId)
+        do
+          studentsCourses.remove(i)
+
+    def getStudentEnrollments(studentId: String): Sequence[Course] =
+      val filteredStudentsCourses = studentsCourses.filter(student => student._1.equals(studentId)).toList
+
+      var sequence: Sequence[Course] = Sequence.Nil()
+      for student_course <- filteredStudentsCourses do
+        val filteredCourses = courses.filter(course => student_course._2.equals(course.courseId))
+        sequence = Sequence.Cons(filteredCourses.head, sequence)
+
+      sequence
+
+    def isStudentEnrolled(studentId: String, courseId: String): Boolean =
+      var check = false
+      for student_course <- studentsCourses
+        if studentsCourses.contains(student_course._1.equals(studentId) && student_course._2.equals(courseId)) do
+        check = true
+
+      if check then
+        true
+      else
+        false
 
 /**
  * Represents an online learning platform that offers courses and manages student enrollments.
@@ -102,11 +170,13 @@ object OnlineCoursePlatform:
  *
  */
 @main def mainPlatform(): Unit =
-  val platform = OnlineCoursePlatform()
+  import ex.OnlineCoursePlatform.OnlineCoursePlatformImpl
 
   val scalaCourse = Course("SCALA01", "Functional Programming in Scala", "Prof. Odersky", "Programming")
   val pythonCourse = Course("PYTHON01", "Introduction to Python", "Prof. van Rossum", "Programming")
   val designCourse = Course("DESIGN01", "UI/UX Design Fundamentals", "Prof. Norman", "Design")
+
+  val platform = OnlineCoursePlatformImpl(mutable.Set.empty[Course], List.empty[String], ListBuffer.empty[(String, String)])
 
   println(s"Is SCALA01 available? ${platform.isCourseAvailable(scalaCourse.courseId)}") // false
   platform.addCourse(scalaCourse)
@@ -142,4 +212,3 @@ object OnlineCoursePlatform:
   platform.removeCourse(pythonCourse)
   println(s"Is PYTHON01 available? ${platform.isCourseAvailable(pythonCourse.courseId)}") // false
   println(s"Programming courses: ${platform.findCoursesByCategory("Programming")}") // Sequence(scalaCourse)
-

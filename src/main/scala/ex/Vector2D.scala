@@ -1,6 +1,6 @@
 package ex
 
-import scala.math.sqrt // Needed for magnitude calculation
+import scala.math.sqrt
 
 // Represents a vector in 2D space
 // Structure: x-component and y-component
@@ -24,14 +24,26 @@ trait Vector2D:
   def magnitude: Double
 
 object Vector2D:
+
   // Factory method to create Vector2D instances
-  def apply(x: Double, y: Double): Vector2D = ???
+  def apply(x: Double, y: Double): Vector2D = Vector2DImpl(x, y)
 
   // Common vectors (optional but nice)
   val zero: Vector2D = apply(0.0, 0.0)
   val i: Vector2D = apply(1.0, 0.0) // Unit vector along x-axis
-  val j: Vector2D = apply(0.0, 1.0) // Unit vector along y-axis
+  val j: Vector2D = apply(0.0, 1.0)
 
+  case class Vector2DImpl(x: Double, y: Double) extends Vector2D:
+
+    def +(other: Vector2D): Vector2D = Vector2DImpl(this.x + other.x, this.y + other.y)
+
+    def -(other: Vector2D): Vector2D = Vector2DImpl(this.x - other.x, this.y - other.y)
+
+    def *(scalar: Double): Vector2D = Vector2DImpl(scalar * this.x, scalar * this.y)
+
+    def dot(other: Vector2D): Double= (this.x * other.x) + (this.y * other.y)
+
+    def magnitude: Double = sqrt((this.x * this.x) + (this.y * this.y))
 
 /** Hints:
  *   - Implement Vector2D with a Vector2DImpl class.
@@ -40,9 +52,13 @@ object Vector2D:
  *   - Modify the implementation to use a `case class Vector2DImpl` instead.
  *   - Observe how equality (==) and toString now work correctly out-of-the-box.
  */
+
+
 @main def checkVectors(): Unit =
-  val v1 = Vector2D(3.0, 4.0)
-  val v2 = Vector2D(-1.0, 2.0)
+  import ex.Vector2D.Vector2DImpl
+
+  val v1 = Vector2DImpl(3.0, 4.0)
+  val v2 = Vector2DImpl(-1.0, 2.0)
 
   val sum = v1 + v2
   // Expected: (3 + (-1), 4 + 2) = (2.0, 6.0)
