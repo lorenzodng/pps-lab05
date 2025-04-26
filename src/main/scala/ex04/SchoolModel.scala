@@ -76,25 +76,18 @@ object SchoolModule:
 
     def hasTeacher(name: String): Boolean =
       var check = false
-      for teacher <- teachersSchool
-          if teacher.name.equals(name) do
-        check = true
-
-      if check then
-        true
-      else
-        false
+      for teacher <- teachersSchool do
+          if teacher.name.equals(name) then
+            check = true
+      check
 
     def hasCourse(name: String): Boolean =
       var check = false
-      for course <- coursesSchool
-          if course.name.equals(name) do
-        check = true
+      for course <- coursesSchool do
+          if course.name.equals(name) then
+            check = true
 
-      if check then
-        true
-      else
-        false
+      check
 
 end SchoolModule
 
