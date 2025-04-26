@@ -79,6 +79,7 @@ object SchoolModule:
       for teacher <- teachersSchool do
           if teacher.name.equals(name) then
             check = true
+
       check
 
     def hasCourse(name: String): Boolean =
