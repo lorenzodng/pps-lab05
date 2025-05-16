@@ -4,87 +4,38 @@ import util.Optionals.Optional
 import util.Sequences.*
 
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer // Assuming Sequence and related methods are here
+import scala.collection.mutable.ListBuffer 
 
-// Represents a course offered on the platform
+//Exercise 1
 trait Course:
-  def courseId: String // Unique identifier (e.g., "CS101", "SCALA01")
+  def courseId: String 
   def title: String
   def instructor: String
-  def category: String // e.g., "Programming", "Data Science", "Design"
+  def category: String
 
 object Course:
-  // Factory method for creating Course instances
   def apply(courseId: String, title: String, instructor: String, category: String): Course = CourseImpl(courseId, title, instructor, category)
 
   case class CourseImpl(courseId: String, title: String, instructor: String, category: String) extends Course
-/**
- * Manages courses and student enrollments on an online learning platform.
- */
+
 trait OnlineCoursePlatform:
-  /**
-   * Adds a new course to the platform's catalog.
-   * @param course The course to add.
-   */
+ 
   def addCourse(course: Course): Unit
 
-  /**
-   * Finds courses belonging to a specific category.
-   * @param category The category to search for.
-   * @return A sequence of courses in that category.
-   */
   def findCoursesByCategory(category: String): Sequence[Course]
-
-  /**
-   * Retrieves a specific course by its unique ID.
-   * @param courseId The ID of the course to retrieve.
-   * @return An Optional containing the course if found, otherwise Optional.empty.
-   */
+  
   def getCourse(courseId: String): Optional[Course]
 
-  /**
-   * Removes a course from the platform's catalog.
-   * (Note: This basic version doesn't handle cascading removal of enrollments).
-   * @param course The course to remove.
-   */
   def removeCourse(course: Course): Unit
 
-  /**
-   * Checks if a course with the given ID exists in the catalog.
-   * @param courseId The ID to check.
-   * @return true if the course exists, false otherwise.
-   */
   def isCourseAvailable(courseId: String): Boolean
 
-  /**
-   * Enrolls a student in a specific course.
-   * Assumes studentId is unique for each student.
-   * @param studentId The ID of the student.
-   * @param courseId The ID of the course to enroll in.
-   *                 Fails silently if the course doesn't exist.
-   */
   def enrollStudent(studentId: String, courseId: String): Unit
 
-  /**
-   * Unenrolls a student from a specific course.
-   * @param studentId The ID of the student.
-   * @param courseId The ID of the course to unenroll from.
-   */
   def unenrollStudent(studentId: String, courseId: String): Unit
-
-  /**
-   * Retrieves all courses a specific student is enrolled in.
-   * @param studentId The ID of the student.
-   * @return A sequence of courses the student is enrolled in.
-   */
+ 
   def getStudentEnrollments(studentId: String): Sequence[Course]
 
-  /**
-   * Checks if a student is enrolled in a specific course.
-   * @param studentId The ID of the student.
-   * @param courseId The ID of the course.
-   * @return true if the student is enrolled, false otherwise.
-   */
   def isStudentEnrolled(studentId: String, courseId: String): Boolean
 
 end OnlineCoursePlatform
@@ -156,19 +107,6 @@ object OnlineCoursePlatform:
       else
         false
 
-/**
- * Represents an online learning platform that offers courses and manages student enrollments.
- * Hints:
- * - Start by implementing the Course trait.
- *    - A case class might be a good fit for this.
- * - Implement the OnlineCoursePlatform trait.
- *    - Focus on how to represent the internal state
- *    - Two main entities: courses and student enrollments
- *    - Set for courses? List of enrollments?
- *  - Implement the factory method for creating an empty platform instance.
- *  - Now start incrementally following the main given
- *
- */
 @main def mainPlatform(): Unit =
   import ex.OnlineCoursePlatform.OnlineCoursePlatformImpl
 
