@@ -4,6 +4,7 @@ import util.Sequences.Sequence
 
 import scala.annotation.tailrec
 
+//Exercise 5
 trait Course:
   def courseId: String
   def title: String
