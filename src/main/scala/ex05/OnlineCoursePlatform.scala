@@ -1,7 +1,6 @@
 package ex05
 
 import util.Sequences.Sequence
-
 import scala.annotation.tailrec
 
 //Exercise 5
