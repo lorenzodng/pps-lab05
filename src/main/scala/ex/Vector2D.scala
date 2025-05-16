@@ -1,5 +1,5 @@
 package ex
-
+//Exercise 1
 import scala.math.sqrt
 
 // Represents a vector in 2D space
