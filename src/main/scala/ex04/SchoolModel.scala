@@ -4,6 +4,7 @@ import util.Sequences.Sequence
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
+//Exercise 4
 trait Teacher:
   def name: String
 
